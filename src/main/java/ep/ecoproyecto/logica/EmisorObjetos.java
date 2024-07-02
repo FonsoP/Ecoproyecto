@@ -39,8 +39,6 @@ public class EmisorObjetos  implements Dibujado{
         gp.obj[NumMap][0]=new ObjetoRecogible("semilla",20,9,gp);
         gp.obj[NumMap][1]=new ObjetoRecogible("semilla",5,7,gp);
         gp.obj[NumMap][2]=new ObjetoRecogible("semilla",6,10,gp);
-        
-        gp.obj[NumMap][3]=new ObjetoRecogible("basura",8,8,gp);
         /*
         //----MUNDO 3:-----//
         NumMap = 2;

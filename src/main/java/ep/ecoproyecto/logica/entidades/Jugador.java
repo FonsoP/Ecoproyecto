@@ -25,18 +25,9 @@ public class Jugador extends Entidad{
     protected int mapa;
     
     //public Entidad inventario[]= new Entidad[10];
-    // 1 llaves
-    // 2 basura
-    // 7 semillas
-    // 9 dinero
-    
-    public int cantInventario[]= new int[10];
-    
-    /*
+    public int semillas=0;
     public int dinero=0;
     public int llaves=0;
-    public int semillas=0;
-    */
     public boolean interactuar;
     
     public int estado;
@@ -282,7 +273,7 @@ public class Jugador extends Entidad{
                             System.out.println(obj.nombre);
                             switch(obj.nombre){
                                 case "llave" -> {
-                                    this.cantInventario[1]++;
+                                    llaves++;
                                     gp.efectos(2);
                                     gp.hud.mostrarmensaje("conseguiste una llave");
                                     this.inventario[1]=new ObjetoRecogible("llave", 0, 0, gp);
@@ -298,7 +289,7 @@ public class Jugador extends Entidad{
                                     }
                                 }
                                 case "coin" -> {
-                                    this.cantInventario[9]++;
+                                    dinero++;
                                     gp.efectos(2);
                                     gp.NPC[0][1].inventario[cont]=null;
                                 }
@@ -322,27 +313,25 @@ public class Jugador extends Entidad{
             //nota se puede usar un getclass para saber el tipo o usar 
             switch(objnombre){
                 case "llave" -> {
-                    //llaves++;
-                    
-                    this.cantInventario[1]++;
+                    llaves++;
                     gp.efectos(2);
                     gp.hud.mostrarmensaje("conseguiste una llave");
                     this.inventario[1]=gp.obj[gp.mapaActual][id];
                     gp.obj[gp.mapaActual][id]=null;
-                    System.out.println("llaves: "+this.cantInventario[1]);
+                    System.out.println("llaves: "+llaves);
                 }
                 case "puerta" -> {
-                        if(this.cantInventario[1]>0){
-                            this.cantInventario[1]--;
+                        if(llaves>0){
+                            llaves--;
                             gp.efectos(5);
                             gp.hud.mostrarmensaje("puerta abierta");
                             gp.obj[gp.mapaActual][id]=null;
-                            if(this.cantInventario[1]==0){
+                            if(llaves==0){
                                 this.inventario[1]=null;
                             }
                         }else{
                             gp.hud.mostrarmensaje("no tienes llaves para esta puerta");
-                            if(this.cantInventario[1]==0){
+                            if(llaves==0){
                                 this.inventario[1]=null;
                             }
                         }
@@ -361,19 +350,13 @@ public class Jugador extends Entidad{
                     gp.obj[gp.mapaActual][id]=null;
                 }
                 case "coin" -> {
-                    this.cantInventario[9]++;
+                    dinero++;
                     gp.hud.victoriamensaje=true;
                     gp.obj[gp.mapaActual][id]=null;
                 }
                 case "semilla" -> {
-                    this.cantInventario[7]++;
+                    semillas++;
                     this.inventario[7]=gp.obj[gp.mapaActual][id];
-                    gp.hud.victoriamensaje=true;
-                    gp.obj[gp.mapaActual][id]=null;
-                }
-                case "basura" -> {
-                    this.cantInventario[2]++;
-                    this.inventario[2]=gp.obj[gp.mapaActual][id];
                     gp.hud.victoriamensaje=true;
                     gp.obj[gp.mapaActual][id]=null;
                 }
@@ -406,46 +389,36 @@ public class Jugador extends Entidad{
                         gp.NPC[gp.mapaActual][id].direction="up";
                     }
                 }
-                switch (gp.NPC[gp.mapaActual][id]) {
-                    case Tienda  aux -> {
-                        gp.hud.mostrarmensaje("tienda");
-                        estado=estadotienda;
-                        }
-                    case PuertaInteractuable  aux -> {
-                        gp.ControlEventos.tpinteractuar(aux.Xtp,aux.Ytp, aux.Ztp);
-                        }
-                    case Papelera  aux -> {
-                            if(this.cantInventario[2]!=0){
-                                gp.hud.mostrarmensaje("depositaste: "+this.cantInventario[2]+" bolsas de basura");
-                                this.inventario[2]=null;
-                                this.cantInventario[2]=0;
-                            }else{
-                                gp.hud.mostrarmensaje(gp.NPC[gp.mapaActual][id].Mensaje);
-                            }
-                        }
-                    case Agujero  aux -> {
-                            if(aux.estado=="Agujerovacio"){
-                                if(this.cantInventario[7]!=0){
-                                    this.cantInventario[7]--;
-                                    if(this.cantInventario[7]==0){
-                                        this.inventario[7]=null;
-                                    }
-                                    gp.hud.mostrarmensaje("Plantaste un Arbol");
-                                    aux.estado="Agujerolleno";
-                                    aux.getImage();
-                                }else{
-                                    gp.hud.mostrarmensaje(aux.Mensaje);
-                                }
-                            }else{
-                                gp.hud.mostrarmensaje("Espero que este Arbol cresca ");
-                            }
-                        }
-                    default -> {
-                        gp.hud.mostrarmensaje(gp.NPC[gp.mapaActual][id].Mensaje);
-                    }   
-                       
+                if(gp.NPC[gp.mapaActual][id].Mensaje!=null){
+                    gp.hud.mostrarmensaje(gp.NPC[gp.mapaActual][id].Mensaje);
+                }
+                if(gp.NPC[gp.mapaActual][id] instanceof Tienda){
+                    gp.hud.mostrarmensaje("tienda");
+                    estado=estadotienda;
+                }
+                if(gp.NPC[gp.mapaActual][id] instanceof PuertaInteractuable Aux){
+                    //x,y,z de la casilla, x,y,z para salir
+                    gp.ControlEventos.tpinteractuar(Aux.Xtp,Aux.Ytp, Aux.Ztp);
                 }
                 
+                if(gp.NPC[gp.mapaActual][id] instanceof Agujero agujero){
+                    if(agujero.estado=="Agujerovacio"){
+                        
+                        if(semillas!=0){
+                            semillas--;
+                            if(llaves==0){
+                                this.inventario[7]=null;
+                            }
+                            gp.hud.mostrarmensaje("Plantaste un Arbol");
+                            agujero.estado="Agujerolleno";
+                            agujero.getImage();
+                        }else{
+                            gp.hud.mostrarmensaje(agujero.Mensaje);
+                        }
+                    }else{
+                        gp.hud.mostrarmensaje("Espero que este Arbol cresca ");
+                    }
+                }
             }
         }
     }

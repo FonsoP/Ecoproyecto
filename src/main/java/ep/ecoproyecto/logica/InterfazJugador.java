@@ -63,7 +63,7 @@ public class InterfazJugador implements Dibujado{
         g2.drawString("posicion X:"+(gp.jugador.xMapa/64)+" Y "+(gp.jugador.yMapa/64), gp.screenWidth-800, gp.screenHeight-50);
 
         //g2.setFont(fuente);
-        g2.drawString("Dinero: "+(gp.jugador.cantInventario[9]),50, 50);
+        g2.drawString("Dinero: "+(gp.jugador.dinero),50, 50);
         //g2.drawImage(llaveimagen, gp.tamanioCasilla/2, gp.tamanioCasilla/2, gp.tamanioCasilla,gp.tamanioCasilla,null);
         //g2.drawString("x = "+gp.jugador.llaves, gp.tamanioCasilla*2, gp.tamanioCasilla);   
         
